@@ -184,7 +184,9 @@
 
           Provision device will be setting up the k3s cluster with the fundamentals required to manage a “robot brain”. For example:
           </p>
+          <div class="has-text-centered">
           <img src="images/provision_device.png" alt="Provision new device/robot">
+          </div>
           <p>Let's break down the above diagram. Deploying a robot operator.
 
             Wrapped in a helm chart for easy deployment and configuration(git repos, credentials etc). K3S includes a helm controller to manage helm deployments out of the box. Operator development is not a new thing and can be done in pretty much any language, and probably the goto is golang for its best integration with kubernetes api, but I will probably go for Rust. With recent developments in the kube-rs and other crates Rust is a perfect candidate for a light, secure and reliable Operator. Anyhow let's discuss the features/responsibilities that our Operator will have. As mentioned above we will have some dependencies before deploying the robot brain. 
@@ -198,35 +200,63 @@
             And last but not least we need some light database to store these logs and metrics in a structured way so later they can be uploaded to our ControlCenter, for further storage, analysis and training. For this I will go for SQLite. Lightweight and reliable.(Fun fact even the default K3s embed database is SQLite- for single nodes though.For multi node clusters the default option is etcd).
             </p>
             <p>So having our “cluster monitoring” and storage configured we can move to the next step 2. deploying the “Robot”. Now the FleetManagment system has a “ready to deploy device”(provisioning the foundations was successful), It is time to “add a robot”. In a complete system the user/customer will trigger a “deploy new robot” request from the CustomerPortal and the FleetManagment will parse the data and create the yaml for us and apply it, or we create the yaml and apply it now the k3s cluster so the operator can see it. You get the idea.</p>
+          <div class="has-text-centered">
           <img src="images/deploy_robot.png" alt="Create Robot instance">
+          </div>
           <h3 class="title is-5">Deploying a "Robot"</h3>
           <p>Here is how I imagine the flow for deploying a robot by the operator. 
-            You can find the complete CRD's definitions <a href="https://github.com/cyb3rsoul/k8s-robot-operator/tree/main/crds" target="_blank">here</a><sup>*</sup>,</span> or just follow the example below:
+            You can find the complete CRD's definitions <a href="https://github.com/cyb3rsoul/k8s-robot-operator/tree/main/crds" target="_blank">here</a><sup>*</sup>,</span> or just follow the example below.
           
             Let's assume we apply something like this:
             </p>
+            <div class="content">
+              <pre><code>Robot:
+                robotName: robot-001
+                robotType: real
+                manifestLocation: https://github.com/my_robot_manifests/
+                path: /humanoid_robot
+                telemetry: true
+                </code></pre>
+              <br>
+              <p>So we create a new Robot instance, the Operator sees the new resource and inspects it. Looking up the manifest location, the operator creates three new resources: RobotRelease, RobotUpdate, and RobotTelemetry.</p>       
+              <br>
+              <p>RobotRelease will have:</p>
+              <pre><code>RobotRelease:
+            name: Robot name - release
+            version: Fetched commit hash or helm chart version
+            robotName: reference to Robot resource name
+            manifestLocation: copied from Robot resource
+            robotUpdate: initially empty (updated later after the operator creates RobotUpdate)
+            </code></pre>
+              
+              <br>
+              <p>RobotUpdate will have:</p>
+              <pre><code>RobotUpdate:
+            name: Robot name - update
+            robotName: reference to Robot object
+            targetRelease: the name of RobotRelease object to deploy
+            currentRelease: current RobotRelease object or empty if initial deployment
+            status: InProgress, Deployed or Failed
+            </code></pre>
+              
+              <br>
+              <p>RobotTelemetry will have:</p>
+              <pre><code>RobotTelemetry:
+            name: Robot name - telemetry
+            robotName: reference to Robot object
+            status: enabled/disabled
+            metrics: [cpu, memory, custom]
+            logs:
+              pod: Name of pod/s or all
+              matchLabel: label to match pods
+            </code></pre>
+            </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 <!-- End RIaaS section -->
-
-<!-- Paper poster -->
-<section class="hero is-small is-light">
-  <div class="hero-body">
-    <div class="container">
-      <h2 class="title">Poster</h2>
-
-      <iframe  src="static/pdfs/sample.pdf" width="100%" height="550">
-          </iframe>
-        
-      </div>
-    </div>
-  </section>
-<!--End paper poster -->
-
-
 
   <footer class="footer">
   <div class="container">
