@@ -173,7 +173,7 @@
           </div>
           <p>Let's break down the above diagram. Deploying a robot operator.
 
-            Wrapped in a helm chart for easy deployment and configuration(git repos, credentials etc). K3S includes a helm controller to manage helm deployments out of the box. Operator development is not a new thing and can be done in pretty much any language, and probably the goto is golang for its best integration with kubernetes api, but I will probably go for Rust. With recent developments in the kube-rs and other crates Rust is a perfect candidate for a light, secure and reliable Operator. Anyhow let's discuss the features/responsibilities that our Operator will have. As mentioned above we will have some dependencies before deploying the robot brain. 
+            Wrapped in a helm chart for easy deployment and configuration(git repos, credentials etc). K3S includes a helm controller to manage helm deployments out of the box. Operator development is not a new thing and can be done in pretty much any language, and probably the goto choice is golang(using client-go) for its best/native integration with kubernetes, but I will probably go for Rust. With recent developments in the kube-rs and other crates Rust is a perfect candidate for a light, secure and reliable Operator. Anyhow let's discuss the features/responsibilities that our Operator will have. As mentioned above we will have some dependencies before deploying the robot brain. 
             
             The Operator can deploy kube-state-metric+metrics-server. We will have plenty of metrics about our cluster objects, state, consumption and resource allocation. 
             
