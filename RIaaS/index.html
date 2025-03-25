@@ -175,7 +175,7 @@
           <p>
             If you are a RaaS provider or robot manufacturer, you build your robots, build your software, but how do you manage and provide your services - Yes from the Mothership :) Centralised, scalable kubernetes cluster that hosts and manages your customers. On the above diagram you can see what could be running on this instance.
           </p>
-          <h3 class="title is-5">The Control Center</h3>
+          <h3 class="title is-5">Control Center</h3>
           <p>
             Every customer, ( CC - could also be your DEV/STAGE/PROD environments) can request a new Control Center(any cloud or on-prem) from the Mothership - this will deploy a new instance of the CC cluster. Again- secure, scalable kubernetes cluster on the cloud is a long solved problem( This will probably trigger some people :), but I am just saying that we don’t need to “invent” anything here). No need to focus how this is deployed, more importantly what will be running on it for the purpose of this article. The ControlCenter will manage your fleet of robots, it will host your monitoring systems and storage solutions, backup your robot data and so on.
           </p>
@@ -188,6 +188,7 @@
 
           Provision device will be setting up the k3s cluster with the fundamentals required to manage a “robot brain”. For example:
           </p>
+          <br>
           <div class="has-text-centered">
           <img src="images/provision_device.png" alt="Provision new device/robot">
           <p class="is-size-6">Diagram 2 - Provision new k3s cluster + dependencies</p>
@@ -206,7 +207,8 @@
             And last but not least we need some light database to store these logs and metrics in a structured way so later they can be uploaded to our ControlCenter, for further storage, analysis and training. For this I will go for SQLite. Lightweight and reliable.(Fun fact even the default K3s embed database is SQLite- for single nodes though.For multi node clusters the default option is etcd).
             </p>
             <p>So having our “cluster monitoring” and storage configured we can move to the next step 2. deploying the “Robot”. Now the FleetManagment system has a “ready to deploy device”(provisioning the foundations was successful), It is time to “add a robot”. In a complete system the user/customer will trigger a “deploy new robot” request from the CustomerPortal and the FleetManagment will parse the data and create the yaml for us and apply it, or we create the yaml and apply it now the k3s cluster so the operator can see it. You get the idea.</p>
-          <div class="has-text-centered">
+          <br>
+            <div class="has-text-centered">
           <img src="images/deploy_robot.png" alt="Create Robot instance">
           <p class="is-size-6">Diagram 3 - Create new Robot</p>
           <br>
@@ -226,9 +228,8 @@
                 telemetry: true
                 </code></pre>
               <br>
-              <p>So we create a new Robot instance, the Operator sees the new resource and inspects it. Looking up the manifest location, the operator creates three new resources: RobotRelease, RobotUpdate, and RobotTelemetry.</p>       
+              <p>So we create a new Robot instance, the Operator sees the new resource and inspects it. Looking up the manifest location, the operator automatically creates three new resources: RobotRelease, RobotUpdate, and RobotTelemetry.</p>       
               <br>
-              <p>RobotRelease will have:</p>
               <pre><code>RobotRelease:
             name: Robot name - release
             version: Fetched commit hash or helm chart version
@@ -238,7 +239,6 @@
             </code></pre>
               
               <br>
-              <p>RobotUpdate will have:</p>
               <pre><code>RobotUpdate:
             name: Robot name - update
             robotName: reference to Robot object
@@ -248,7 +248,6 @@
             </code></pre>
               
               <br>
-              <p>RobotTelemetry will have:</p>
               <pre><code>RobotTelemetry:
             name: Robot name - telemetry
             robotName: reference to Robot object
@@ -287,7 +286,7 @@
       <div class="column is-8">
         <div class="content">
 
-          <p class="is-size-4">
+          <p class="is-size-10">
             This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a>
           </p>
         </div>
