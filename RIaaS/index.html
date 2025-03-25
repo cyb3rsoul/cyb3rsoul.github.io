@@ -251,6 +251,17 @@
               matchLabel: label to match pods
             </code></pre>
             </div>
+
+            <p>In case you like diagrams like I do, here is another one: </p>
+            <br>
+            <img src="images/robot_operator_crds.png" alt="Robot Operator CRD refs">
+            <p>Having those resources the Operator can pretty much handle everything from deploying, updating and monitoring. Of course the operator logic could get way more complicated, but I think this is a good foundation. The CRDs will also be quite helpful looking up resources, finding out  their state and bubbling up this data to the ControlCenter(FleetManagment, Monitoring etc) even with just simple kubectl commands.</p>
+
+            <h3 class="title is-5">Summary</h3>
+            <p>Looking back to Diagram 1, the whole system is modular, but  there are a lot of pieces that need to be implemented which we don’t even consider in this article. For example developing the CustomerPlatform, Having the Mothership automated ControlCenter deployments(Terraform), FleetManagment, MissionControl and so on, but having this infrastructure we can also start working gradually. To do this I will start working backwards. 
+              First we only need the Kubernetes Operator. Benefit from the automation and unified k3s environment, we can develop and deploy software on targets(real or virtual) efficiently.Second step will be manual deployment of a Control Center. Start developing the FleetManagment, Monitoring, MissionControl and etc. One static Control Center can manage a lot of bots. Then the last steps will be deploying the Mothership if there is a need to manage multiple CC and providing a CustomerPlatform.
+              I greatly appreciate everyone who read through the  article and would like to know what you think? Am I completely out of scope? Am I missing something fundamental in my design? Is this something worth implementing?  Let  me know! 
+              </p>
         </div>
       </div>
     </div>
