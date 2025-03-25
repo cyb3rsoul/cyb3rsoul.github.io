@@ -48,7 +48,17 @@
     img {
       max-width: 100%;
       height: auto;
-      border: 2px solid red;
+      border: 2px solid red; /* Remove this after testing */
+    }
+    .container, .column {
+      max-width: 100%;
+      overflow-x: hidden; /* Prevents horizontal scrolling */
+    }
+    @media (max-width: 768px) { /* Bulma’s mobile breakpoint */
+      .column {
+        width: 100%;
+        padding: 0.75rem; /* Matches Bulma’s default padding */
+      }
     }
   </style>
 </head>
