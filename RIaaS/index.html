@@ -167,22 +167,12 @@
           <br>
           <div class="has-text-centered">
           <img src="images/provision_device.png" alt="Provision new device/robot">
-          <p class="is-size-6">Diagram 2 - Provision new k3s cluster + dependencies</p>
+          <p class="is-size-6">Diagram 2 - K3s cluster + RobotOperator + dependencies</p>
           <br>
           </div>
-          <p>Let's break down the above diagram. Deploying a robot operator.
-
-            Wrapped in a helm chart for easy deployment and configuration(git repos, credentials etc). K3S includes a helm controller to manage helm deployments out of the box. Operator development is not a new thing and can be done in pretty much any language, and probably the goto choice is golang(using client-go) for its best/native integration with kubernetes, but I will probably go for Rust. With recent developments in the kube-rs and other crates Rust is a perfect candidate for a light, secure and reliable Operator. Anyhow let's discuss the features/responsibilities that our Operator will have. As mentioned above we will have some dependencies before deploying the robot brain. 
-            
-            The Operator can deploy kube-state-metric+metrics-server. We will have plenty of metrics about our cluster objects, state, consumption and resource allocation. 
-            
- 
-            Next the operator deploys FluentBit(or Vector- also written in Rust) - it is a very lightweight log processor with easy to configure filters for managing log collection rules.
-            
-            
-            And last but not least we need some light database to store these logs and metrics in a structured way so later they can be uploaded to our ControlCenter, for further storage, analysis and training. For this I will go for SQLite. Lightweight and reliable.(Fun fact even the default K3s embed database is SQLite- for single nodes though.For multi node clusters the default option is etcd).
+          <p>Let's break down the above diagram. Deploying the robot operator. Wrapped in a helm chart for easy deployment and configuration(source repos, credentials etc). K3S includes a helm controller to manage helm deployments out of the box. Operator development is not a new thing and can be done in pretty much any language, and probably the goto choice is golang(using client-go) for its best/native integration with kubernetes, but I will probably go for Rust. With recent developments in the kube-rs and other crates Rust is a perfect candidate for a light, secure and reliable Operator. Anyhow let's discuss the features/responsibilities that our Operator will have. As mentioned above we will need some dependencies before deploying the “robot brain”. The Operator can deploy kube-state-metric and metrics-server. We will have plenty of metrics about our cluster objects, state, consumption and resource allocation. Next the Operator deploys FluentBit(or Vector- also written in Rust). FluentBit is a very lightweight log processor with easy to configure filters for managing log collection rules. And last but not least we need some light database to store these logs and metrics in a structured way so later they can be uploaded to our ControlCenter, for further storage, analysis and training. For this I will go for SQLite. Lightweight and reliable.(Fun fact even the default K3s embedded database is SQLite - for single nodes though. For multi node clusters the default option is etcd).
             </p>
-            <p>So having our “cluster monitoring” and storage configured we can move to the next step 2. deploying the “Robot”. Now the FleetManagment system has a “ready to deploy device”(provisioning the foundations was successful), It is time to “add a robot”. In a complete system the user/customer will trigger a “deploy new robot” request from the CustomerPortal and the FleetManagment will parse the data and create the yaml for us and apply it, or we create the yaml and apply it now the k3s cluster so the operator can see it. You get the idea.</p>
+            <p>So having our “cluster monitoring” and storage configured we can move to the next step. Deploying the “Robot”. Now the FleetManagment system has a “ready to deploy device” (provisioning the foundations was successful), It is time to “add a robot”. In a complete system the user will trigger a “deploy new robot” request from the CustomerPortal and the FleetManagment will parse the data and create the yaml for us and apply it, or we create the yaml and apply it now the k3s cluster so the operator can see it. You get the idea.</p>
           <br>
             <div class="has-text-centered">
           <img src="images/deploy_robot.png" alt="Create Robot instance">
@@ -245,10 +235,9 @@
             <p>Having those resources the Operator can pretty much handle everything from deploying, updating and monitoring. Of course the operator logic could get way more complicated, but I think this is a good foundation. The CRDs will also be quite helpful looking up resources, finding out  their state and bubbling up this data to the ControlCenter(FleetManagment, Monitoring etc) even with just simple kubectl commands.</p>
 
             <h3 class="title is-5">Summary</h3>
-            <p>Looking back to Diagram 1, the whole system is modular, but  there are a lot of pieces that need to be implemented which we don’t even consider in this article. For example developing the CustomerPlatform, Having the Mothership automated ControlCenter deployments(Terraform), FleetManagment, MissionControl and so on, but having this infrastructure we can also start working gradually. To do this I will start working backwards. 
-              First we only need the Kubernetes Operator. Benefit from the automation and unified k3s environment, we can develop and deploy software on targets(real or virtual) efficiently.Second step will be manual deployment of a Control Center. Start developing the FleetManagment, Monitoring, MissionControl and etc. One static Control Center can manage a lot of bots. Then the last steps will be deploying the Mothership if there is a need to manage multiple CC and providing a CustomerPlatform.
-              I greatly appreciate everyone who read through the  article and would like to know what you think? Am I completely out of scope? Am I missing something fundamental in my design? Is this something worth implementing?  Let  me know! 
+            <p>Looking back to Diagram1, the whole system is modular, but there are a lot of pieces that need to be implemented which we don't even consider in this article. For example developing the CustomerPlatform, Having the Mothership automated ControlCenter deployments(Terraform), FleetManagment, MissionControl and so on, but having this infrastructure we can also start working gradually. To do this I will start working <strong>backwards</strong>. First we only need the <strong>Kubernetes Operator</strong>. Benefit from the Operator automation and unified k3s environment, we can develop and deploy software on targets(real or virtual) efficiently. Second step will be manual deployment of a Control Center. Start developing the FleetManagment, Monitoring, MissionControl and etc. One “static” Control Center can manage a lot of bots. Then the last steps will be deploying the Mothership if there is a need to manage multiple CC and providing a CustomerPlatform. 
               </p>
+            <p>I greatly appreciate everyone who read through the article and would like to know what you think? Am I completely out of scope? Am I missing something fundamental in my design? Is this something worth implementing? Let me know on harizanov87@gmail.com</p>
         </div>
       </div>
     </div>
