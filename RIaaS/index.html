@@ -179,6 +179,32 @@
           <p>
             Now the cool part :) Every robot(virtual/real) is different, every software that runs on those robots is different (Monolith, Microservices with their own special communication (gRPc, ROS nodes), dependencies etc. I hear a lot of dev teams struggle with the configuration of the targets, managing dependencies, struggling with updates and rollbacks and so on. I just naturally think about kubernetes again. Why not run kubernetes on the robot? Let's consider the flow as a real use case. We have our CC provisioned and we need to add a new robot. I will not go into detail here, let's just assume you have your robot connected to the CC network and the Fleet Management service is able to connect to it and deploy a K3S cluster on this device(virtual machine, robot, jetson board or whatever…). K3s Much lighter than k8s, stable and well maintained ). Having the foundations set we need a few more things before starting deploying the robot brains! I am no robotics engineer and probably I am missing some things here, but let’s start somewhere. We need something to be able to “put together” a complex software on the k3s cluster. Manage changes, monitor state, and collect metrics/telemetry - One of my favourite Kubernetes topics- Operators. I think this could be a great solution for our problem - Kubernetes Operator for managing robots.
           </p>
+        </br>
+        <p>I will break this initial setup in two steps. 1. Provision_device 2. Deploy_robot.
+
+          Provision device will be setting up the k3s cluster with the fundamentals required to manage a “robot brain”. For example:
+          </p>
+          <img src="images/provision_device.png" alt="Provision new device/robot">
+          <p>Let's break down the above diagram. Deploying a robot operator.
+
+            Wrapped in a helm chart for easy deployment and configuration(git repos, credentials etc). K3S includes a helm controller to manage helm deployments out of the box. Operator development is not a new thing and can be done in pretty much any language, and probably the goto is golang for its best integration with kubernetes api, but I will probably go for Rust. With recent developments in the kube-rs and other crates Rust is a perfect candidate for a light, secure and reliable Operator. Anyhow let's discuss the features/responsibilities that our Operator will have. As mentioned above we will have some dependencies before deploying the robot brain. 
+            
+            The Operator can deploy kube-state-metric+metrics-server. We will have plenty of metrics about our cluster objects, state, consumption and resource allocation. 
+            
+ 
+            Next the operator deploys FluentBit(or Vector- also written in Rust) - it is a very lightweight log processor with easy to configure filters for managing log collection rules.
+            
+            
+            And last but not least we need some light database to store these logs and metrics in a structured way so later they can be uploaded to our ControlCenter, for further storage, analysis and training. For this I will go for SQLite. Lightweight and reliable.(Fun fact even the default K3s embed database is SQLite- for single nodes though.For multi node clusters the default option is etcd).
+            </p>
+            <p>So having our “cluster monitoring” and storage configured we can move to the next step 2. deploying the “Robot”. Now the FleetManagment system has a “ready to deploy device”(provisioning the foundations was successful), It is time to “add a robot”. In a complete system the user/customer will trigger a “deploy new robot” request from the CustomerPortal and the FleetManagment will parse the data and create the yaml for us and apply it, or we create the yaml and apply it now the k3s cluster so the operator can see it. You get the idea.</p>
+          <img src="images/deploy_robot.png" alt="Create Robot instance">
+          <h3 class="title is-5">Deploying a "Robot"</h3>
+          <p>Here is how I imagine the flow for deploying a robot by the operator. 
+            You can find the complete CRD's definitions <a href="https://github.com/cyb3rsoul/k8s-robot-operator/tree/main/crds" target="_blank">here</a><sup>*</sup>,</span> or just follow the example below:
+          
+            Let's assume we apply something like this:
+            </p>
         </div>
       </div>
     </div>
