@@ -165,8 +165,11 @@
       <div class="column is-four-fifths">
         <h2 class="title is-3">RIaaS - Robotics Infrastructure as Service</h2>
         <h3 class="subtitle is-4">Here is a high level of what I came up with:</h3>
+        <div class="has-text-centered"></div>
         <img src="images/riaas_high_level.png" alt="High-level RIaaS diagram">
         <p class="is-size-6">Diagram 1 - High-level RIaaS Overview</p>
+        <br>
+        </div>
         <div class="content">
           <h3 class="title is-5">The Mothership</h3>
           <p>
@@ -187,6 +190,8 @@
           </p>
           <div class="has-text-centered">
           <img src="images/provision_device.png" alt="Provision new device/robot">
+          <p class="is-size-6">Diagram 2 - Provision new k3s cluster + dependencies</p>
+          <br>
           </div>
           <p>Let's break down the above diagram. Deploying a robot operator.
 
@@ -203,6 +208,8 @@
             <p>So having our “cluster monitoring” and storage configured we can move to the next step 2. deploying the “Robot”. Now the FleetManagment system has a “ready to deploy device”(provisioning the foundations was successful), It is time to “add a robot”. In a complete system the user/customer will trigger a “deploy new robot” request from the CustomerPortal and the FleetManagment will parse the data and create the yaml for us and apply it, or we create the yaml and apply it now the k3s cluster so the operator can see it. You get the idea.</p>
           <div class="has-text-centered">
           <img src="images/deploy_robot.png" alt="Create Robot instance">
+          <p class="is-size-6">Diagram 3 - Create new Robot</p>
+          <br>
           </div>
           <h3 class="title is-5">Deploying a "Robot"</h3>
           <p>Here is how I imagine the flow for deploying a robot by the operator. 
@@ -255,7 +262,11 @@
 
             <p>In case you like diagrams like I do, here is another one: </p>
             <br>
+            <div class="has-text-centered">
             <img src="images/robot_operator_crds.png" alt="Robot Operator CRD refs">
+            <p class="is-size-6">Diagram 4 - Operator CRD's reference</p>
+            <br>
+            </div>
             <p>Having those resources the Operator can pretty much handle everything from deploying, updating and monitoring. Of course the operator logic could get way more complicated, but I think this is a good foundation. The CRDs will also be quite helpful looking up resources, finding out  their state and bubbling up this data to the ControlCenter(FleetManagment, Monitoring etc) even with just simple kubectl commands.</p>
 
             <h3 class="title is-5">Summary</h3>
@@ -276,7 +287,7 @@
       <div class="column is-8">
         <div class="content">
 
-          <p>
+          <p lass="is-size-4">
             This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a>
           </p>
         </div>
